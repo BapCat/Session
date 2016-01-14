@@ -17,8 +17,8 @@ class DatabaseSessionServiceProvider implements ServiceProvider {
   
   public function register() {
     $def = new EntityDefinition(Session::class);
-    $def->required('token', Sha256StrongHash::class);
-    $def->required('data',  Text::class);
+    $def->required('session_token', Sha256StrongHash::class);
+    $def->required('session_data',  Text::class);
     $def->timestamps();
     
     $this->remodel->register($def);

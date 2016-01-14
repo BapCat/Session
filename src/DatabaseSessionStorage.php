@@ -22,16 +22,16 @@ class DatabaseSessionStorage implements SessionHandlerInterface {
     return true;
   }
   
-  public function destroy($session_id) {
-    $this->gateway->query()->where('session_id', $session_id)->delete();
+  public function destroy($session_token) {
+    $this->gateway->query()->where('session_token', $session_token)->delete();
   }
   
   public function gc($max_lifetime) {
     $this->gateway->query()->where('updated_at', '<=', time() - $max_lifetime)->delete();
   }
   
-  public function read($session_id) {
-    $session = $this->gateway->query()->where('session_id', $session_id)->first();
+  public function read($session_token) {
+    $session = $this->gateway->query()->where('session_token', $session_token)->first();
     
     if($session === null) {
       return '';
@@ -42,16 +42,15 @@ class DatabaseSessionStorage implements SessionHandlerInterface {
     return $session['session_data'];
   }
   
-  public function write($session_id, $session_data) {
+  public function write($session_token, $session_data) {
     $data = [
-      'session_id'   => $session_id,
-      'session_data' => $session_data
+      'session_token' => $session_token,
+      'session_data'  => $session_data
     ];
     
     if(!$this->exists) {
-      $this->gateway->query()->insert($data);
     } else {
-      $this->gateway->query()->where('session_id', $session_id)->update($data);
+      $this->gateway->query()->where('session_token', $session_token)->update($data);
     }
     
     return true;
