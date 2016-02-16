@@ -26,10 +26,12 @@ class DatabaseSessionServiceProvider implements ServiceProvider {
     $this->ioc->singleton(SessionGateway::class, SessionGateway::class);
     $this->ioc->singleton(SessionRepository::class, SessionRepository::class);
     
-    $manager = new SessionManager();
-    $manager->setHandler($this->ioc->make(DatabaseSessionStorage::class));
-    
-    $this->ioc->bind(SessionManager::class, $manager);
+    $this->ioc->bind(SessionManager::class, function() {
+      $manager = new SessionManager();
+      $manager->setHandler($this->ioc->make(DatabaseSessionStorage::class));
+      
+      return $manager;
+    });
   }
   
   public function boot() {

@@ -27,7 +27,7 @@ $connection->setFetchMode(PDO::FETCH_ASSOC);
 
 $connection->getSchemaBuilder()->create('sessions', function(Blueprint $table) use($connection) {
   $table->increments('id');
-  $table->string('session_id', 64)->unique();
+  $table->string('session_token', 64)->unique();
   $table->string('session_data');
   $table->timestamp('created_at')->default($connection->raw('CURRENT_TIMESTAMP'));
   $table->timestamp('updated_at')->default($connection->raw('CURRENT_TIMESTAMP'));
@@ -51,9 +51,18 @@ $provider->boot();
 
 $manager = $ioc->make(SessionManager::class);
 
+$gateway = $ioc->make(SessionGateway::class);
+
 $manager->open();
 $manager->set('test', 'This is a test');
 $manager->close();
 
-$gateway = $ioc->make(SessionGateway::class);
-var_dump($gateway->query()->first());
+$s1 = $gateway->query()->get();
+
+$manager->open();
+$manager->set('test', 'This is not a test');
+$manager->close();
+
+$s2 = $gateway->query()->get();
+
+var_dump($s1, $s2);

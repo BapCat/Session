@@ -49,6 +49,7 @@ class DatabaseSessionStorage implements SessionHandlerInterface {
     ];
     
     if(!$this->exists) {
+      $this->gateway->query()->where('session_token', $session_token)->insert($data);
     } else {
       $this->gateway->query()->where('session_token', $session_token)->update($data);
     }
