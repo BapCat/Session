@@ -12,16 +12,19 @@
   ],
   "require": {
     "php": ">=5.6.0",
-    "bapcat/hashing": "^0.2.4",
-    "bapcat/services": "^0.2",
-    "bapcat/request": "^0.1.0",
     "bapcat/collection": "^0.1.0"
   },
   "require-dev": {
+    "bapcat/hashing": "^0.2.4",
+    "bapcat/services": "^0.2",
     "bapcat/persist": "^0.2",
     "bapcat/phi": "^2.0",
     "bapcat/remodel": "^0.2",
     "phpunit/phpunit": "^5.0"
+  },
+  "suggest": {
+    "bapcat/services": "Required to use service providers",
+    "bapcat/remodel": "Required to use database session storage"
   },
   "autoload": {
     "psr-4": {
