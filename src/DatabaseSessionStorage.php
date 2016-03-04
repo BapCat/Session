@@ -2,6 +2,8 @@
 
 use BapCat\Session\SessionGateway;
 
+use DateInterval;
+use DateTime;
 use SessionHandlerInterface;
 
 class DatabaseSessionStorage implements SessionHandlerInterface {
@@ -27,7 +29,10 @@ class DatabaseSessionStorage implements SessionHandlerInterface {
   }
   
   public function gc($max_lifetime) {
-    $this->gateway->query()->where('updated_at', '<=', time() - $max_lifetime)->delete();
+    $dt = new DateTime();
+    $dt->sub(new DateInterval("PT{$max_lifetime}S"));
+    
+    $this->gateway->query()->where('updated_at', '<=', $dt->format(DATE_ISO8601))->delete();
   }
   
   public function read($session_token) {
