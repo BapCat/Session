@@ -25,7 +25,7 @@ class DatabaseSessionStorage implements SessionHandlerInterface {
   }
   
   public function destroy($session_token) {
-    $this->gateway->query()->where('session_token', $session_token)->delete();
+    return $this->gateway->query()->where('session_token', $session_token)->delete() !== 0;
   }
   
   public function gc($max_lifetime) {
