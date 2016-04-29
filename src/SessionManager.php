@@ -10,9 +10,11 @@ class SessionManager extends Collection {
   }
   
   public function open() {
-    session_start();
+    $success = session_start();
     
     $this->collection = &$_SESSION;
+    
+    return $success;
   }
   
   public function close() {
@@ -20,6 +22,22 @@ class SessionManager extends Collection {
   }
   
   public function regenerate() {
-    session_regenerate_id(true);
+    return session_regenerate_id(true);
+  }
+  
+  public function destroy() {
+    return session_destroy();
+  }
+  
+  public function reset() {
+    session_reset();
+  }
+  
+  public function abort() {
+    session_abort();
+  }
+  
+  public function clear() {
+    session_unset();
   }
 }
