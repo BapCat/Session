@@ -10,11 +10,21 @@ class SessionManager extends Collection {
   }
   
   public function open() {
-    $success = session_start();
+    if(!@session_start()) {
+      session_id(hash('sha256', openssl_random_pseudo_bytes(64)));
+      
+      if(!session_start()) {
+        return false;
+      }
+      
+      if(!$this->regenerate()) {
+        return false;
+      }
+    }
     
     $this->collection = &$_SESSION;
     
-    return $success;
+    return true;
   }
   
   public function close() {
