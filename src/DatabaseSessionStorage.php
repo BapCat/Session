@@ -8,7 +8,6 @@ use SessionHandlerInterface;
 
 class DatabaseSessionStorage implements SessionHandlerInterface {
   private $gateway;
-  private $session;
   
   public function __construct(SessionGateway $gateway) {
     $this->gateway = $gateway;
@@ -22,8 +21,8 @@ class DatabaseSessionStorage implements SessionHandlerInterface {
     return true;
   }
   
-  public function destroy($session_token) {
-    return $this->gateway->query()->where('id', $session_token)->delete() !== 0;
+  public function destroy($token) {
+    return $this->gateway->query()->where('id', $token)->delete() !== 0;
   }
   
   public function gc($max_lifetime) {
@@ -33,22 +32,21 @@ class DatabaseSessionStorage implements SessionHandlerInterface {
     $this->gateway->query()->where('updated_at', '<=', $dt->format(DATE_ISO8601))->delete();
   }
   
-  public function read($session_token) {
-    $this->session = $this->gateway->query()->where('id', $session_token)->first();
+  public function read($token) {
+    $session = $this->gateway->query()->where('id', $token)->first();
     
-    if($this->session === null) {
-      $this->session = [];
+    if($session === null) {
       return '';
     }
     
-    return $this->session['session_data'];
+    return $session['data'];
   }
   
-  public function write($session_token, $session_data) {
-    $this->session['id'] = $session_token;
-    $this->session['session_data'] = $session_data;
-    
-    $this->gateway->query()->replace($this->session);
+  public function write($token, $data) {
+    $this->gateway->query()->replace([
+      'id' => $token,
+      'data' => $data,
+    ]);
     
     return true;
   }

@@ -28,12 +28,12 @@ $connection = new RemodelConnection($pdo, new SQLiteGrammar(), new SQLiteProcess
 $connection->setSchemaGrammar(new SQLiteSchemaGrammar());
 
 $connection->getSchemaBuilder()->create('sessions', function(Blueprint $table) use($connection) {
-  $table->string('session_token', 64);
-  $table->string('session_data');
+  $table->string('token', 64);
+  $table->string('data');
   $table->timestamp('created_at')->default($connection->raw('CURRENT_TIMESTAMP'));
   $table->timestamp('updated_at')->default($connection->raw('CURRENT_TIMESTAMP'));
   
-  $table->primary('session_token');
+  $table->primary('token');
 });
 
 $ioc->bind(ConnectionInterface::class, $connection);
