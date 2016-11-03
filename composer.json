@@ -19,7 +19,7 @@
     "bapcat/services": "^0.2",
     "bapcat/persist": "^0.2",
     "bapcat/phi": "^2.0",
-    "bapcat/remodel": "^0.2",
+    "bapcat/remodel": "^0.3.6",
     "phpunit/phpunit": "^5.0"
   },
   "suggest": {

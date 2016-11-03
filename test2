@@ -6,6 +6,7 @@ require __DIR__ . '/vendor/autoload.php';
 use BapCat\Persist\Drivers\Local\LocalDriver;
 use BapCat\Phi\Phi;
 use BapCat\Remodel\Registry;
+use BapCat\Remodel\RemodelConnection;
 
 use BapCat\Session\DatabaseSessionServiceProvider;
 use BapCat\Session\DatabaseSessionStorage;
@@ -14,16 +15,17 @@ use BapCat\Session\SessionManager;
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\ConnectionInterface;
-use Illuminate\Database\SQLiteConnection;
+use Illuminate\Database\Query\Grammars\SQLiteGrammar;
+use Illuminate\Database\Query\Processors\SQLiteProcessor;
+use Illuminate\Database\Schema\Grammars\SQLiteGrammar as SQLiteSchemaGrammar;
 
 $ioc = Phi::instance();
 
 //-CONNECTION--------------------------------------------------------
 $pdo = new PDO('sqlite::memory:');
-$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-$connection = new SQLiteConnection($pdo);
-$connection->setFetchMode(PDO::FETCH_ASSOC);
+$connection = new RemodelConnection($pdo, new SQLiteGrammar(), new SQLiteProcessor());
+$connection->setSchemaGrammar(new SQLiteSchemaGrammar());
 
 $connection->getSchemaBuilder()->create('sessions', function(Blueprint $table) use($connection) {
   $table->increments('id');

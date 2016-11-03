@@ -10,8 +10,6 @@ class DatabaseSessionStorage implements SessionHandlerInterface {
   private $gateway;
   private $session;
   
-  private $exists;
-  
   public function __construct(SessionGateway $gateway) {
     $this->gateway = $gateway;
   }
@@ -36,28 +34,21 @@ class DatabaseSessionStorage implements SessionHandlerInterface {
   }
   
   public function read($session_token) {
-    $session = $this->gateway->query()->where('session_token', $session_token)->first();
+    $this->session = $this->gateway->query()->where('session_token', $session_token)->first();
     
-    if($session === null) {
+    if($this->session === null) {
+      $this->session = [];
       return '';
     }
     
-    $this->exists = true;
-    
-    return $session['session_data'];
+    return $this->session['session_data'];
   }
   
   public function write($session_token, $session_data) {
-    $data = [
-      'session_token' => $session_token,
-      'session_data'  => $session_data
-    ];
+    $this->session['session_token'] = $session_token;
+    $this->session['session_data']   = $session_data;
     
-    if(!$this->exists) {
-      $this->gateway->query()->insert($data);
-    } else {
-      $this->gateway->query()->where('session_token', $session_token)->update($data);
-    }
+    $this->session['id'] = $this->gateway->query()->replaceGetId($this->session);
     
     return true;
   }
