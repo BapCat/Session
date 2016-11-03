@@ -48,7 +48,7 @@ class DatabaseSessionStorage implements SessionHandlerInterface {
     $this->session['session_token'] = $session_token;
     $this->session['session_data']   = $session_data;
     
-    $this->session['id'] = $this->gateway->query()->replaceGetId($this->session);
+    $this->gateway->query()->replace($this->session);
     
     return true;
   }
