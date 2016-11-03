@@ -23,7 +23,7 @@ class DatabaseSessionStorage implements SessionHandlerInterface {
   }
   
   public function destroy($session_token) {
-    return $this->gateway->query()->where('session_token', $session_token)->delete() !== 0;
+    return $this->gateway->query()->where('id', $session_token)->delete() !== 0;
   }
   
   public function gc($max_lifetime) {
@@ -34,7 +34,7 @@ class DatabaseSessionStorage implements SessionHandlerInterface {
   }
   
   public function read($session_token) {
-    $this->session = $this->gateway->query()->where('session_token', $session_token)->first();
+    $this->session = $this->gateway->query()->where('id', $session_token)->first();
     
     if($this->session === null) {
       $this->session = [];
@@ -45,8 +45,8 @@ class DatabaseSessionStorage implements SessionHandlerInterface {
   }
   
   public function write($session_token, $session_data) {
-    $this->session['session_token'] = $session_token;
-    $this->session['session_data']   = $session_data;
+    $this->session['id'] = $session_token;
+    $this->session['session_data'] = $session_data;
     
     $this->gateway->query()->replace($this->session);
     
