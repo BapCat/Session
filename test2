@@ -1,5 +1,5 @@
 #!/usr/bin/env php
-<?php
+<?php declare(strict_types=1);
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -27,12 +27,12 @@ $pdo = new PDO('sqlite::memory:');
 $connection = new RemodelConnection($pdo, new SQLiteGrammar(), new SQLiteProcessor());
 $connection->setSchemaGrammar(new SQLiteSchemaGrammar());
 
-$connection->getSchemaBuilder()->create('sessions', function(Blueprint $table) use($connection) {
+$connection->getSchemaBuilder()->create('sessions', function(Blueprint $table) use($connection): void {
   $table->string('token', 64);
   $table->string('data');
   $table->timestamp('created_at')->default($connection->raw('CURRENT_TIMESTAMP'));
   $table->timestamp('updated_at')->default($connection->raw('CURRENT_TIMESTAMP'));
-  
+
   $table->primary('token');
 });
 
